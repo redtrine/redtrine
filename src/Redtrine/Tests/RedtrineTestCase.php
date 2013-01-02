@@ -27,4 +27,15 @@ class RedtrineTestCase extends \PHPUnit_Framework_TestCase
     {
         unset($this->redis);
     }
+
+    public function keyValuesProvider()
+    {
+        $cases = array();
+        $total = 20;
+        for ($i = 0; $i < $total; $i++) {
+            $cases[] = array("field$i", md5(uniqid(rand(), true)));
+        }
+
+        return $cases;
+    }
 }

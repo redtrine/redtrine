@@ -9,14 +9,38 @@ use IteratorAggregate,
 class Hash extends Base implements IteratorAggregate, Countable
 {
     /**
-     * Add a field - value pair to the hash.
+     * Get an array of hash keys.
+     *
+     * @return array
+     */
+    public function keys()
+    {
+        return $this->client->hkeys($this->key);
+    }
+
+    /**
+     * Get an array of hash values.
+     *
+     * @return array
+     */
+    public function values()
+    {
+        return $this->client->hvals($this->key);
+    }
+
+    /**
+     * Sets one or more key/value pairs
      *
      * @param $field
      * @param $value
      */
-    public function add($field, $value)
+    public function set($field, $value = null)
     {
-        $this->client->hset($this->key, $field, $value);
+        if (is_array($field)) {
+            $this->client->hmset($this->key, $field);
+        } else {
+            $this->client->hset($this->key, $field, $value);
+        }
     }
 
     /**

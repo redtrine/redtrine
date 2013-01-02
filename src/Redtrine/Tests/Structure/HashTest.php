@@ -2,31 +2,64 @@
 
 namespace Redtrine\Tests\Structure;
 
-use Redtrine\Redtrine;
-use Redtrine\Structure\Set;
 use Redtrine\Tests\RedtrineTestCase;
+use Redtrine\Structure\Hash;
 
 class HashTest extends RedtrineTestCase
 {
     /**
-     * @var Set
+     * @var Redtrine\Structure\Hash
      */
-    protected $set;
+    protected $hash;
 
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
-        $this->hash = $this->redtrine->create('Hash', 'theNameOfTheHash');
+        $this->hash = new Hash('hashName');
+        $this->hash->setClient($this->getRedisClient());
         $this->hash->removeAll();
     }
 
-    /**
-     * @dataProvider getElements
-     */
-    public function testAdd($field, $value)
+    public function testKeysReturnEmptyArrayWhenKeyDoesNotExist()
     {
-        $this->hash->add($field, $value);
-        $this->assertTrue($this->hash->contains($field));
+        $this->assertTrue(is_array($this->hash->keys()));
+    }
+
+    public function testKeysReturnArrayOfHashKeys()
+    {
+        $keys = array();
+        foreach ($this->keyValuesProvider() as $item) {
+            list($key, $value) = $item;
+            $keys[] = $key;
+
+            $this->hash->set($key, $value);
+        }
+
+        $this->assertEquals($keys, $this->hash->keys());
+    }
+
+    /**
+     * @dataProvider keyValuesProvider
+     */
+    public function testSetWithSingleKeyValue($key, $value)
+    {
+        $this->hash->set($key, $value);
+
+        $this->assertTrue($this->hash->contains($key));
+        $this->assertEquals($value, $this->hash->get($key));
+    }
+
+    public function testSetWithMultipleKeyValuesPair()
+    {
+        foreach ($this->keyValuesProvider() as $item) {
+            list($key, $value) = $item;
+            $values[$key] = $value;
+        }
+
+        $this->hash->set($values);
+
+        $this->assertEquals(array_keys($values), $this->hash->keys());
+        $this->assertEquals(array_values($values), $this->hash->values());
     }
 
     /**
@@ -34,7 +67,7 @@ class HashTest extends RedtrineTestCase
      */
     public function testGet($field, $value)
     {
-        $this->hash->add($field, $value);
+        $this->hash->set($field, $value);
         $this->assertTrue($this->hash->contains($field));
         $this->assertEquals($this->hash->get($field), $value);
     }
@@ -44,7 +77,7 @@ class HashTest extends RedtrineTestCase
      */
     public function testRemove($field, $value)
     {
-        $this->hash->add($field, $value);
+        $this->hash->set($field, $value);
         $this->assertTrue($this->hash->contains($field));
         $this->assertEquals($this->hash->get($field), $value);
 
@@ -57,7 +90,7 @@ class HashTest extends RedtrineTestCase
     {
         $elements = $this->getRandomElements();
         foreach ($elements as $field => $value) {
-            $this->hash->add($field, $value);
+            $this->hash->set($field, $value);
             $this->assertTrue($this->hash->contains($field));
             $this->assertEquals($this->hash->get($field), $value);
         }
@@ -77,7 +110,7 @@ class HashTest extends RedtrineTestCase
         $elements = $this->getRandomElements();
 
         foreach ($elements as $field => $value) {
-            $this->hash->add($field, $value);
+            $this->hash->set($field, $value);
             $this->assertTrue($this->hash->contains($field));
         }
 
