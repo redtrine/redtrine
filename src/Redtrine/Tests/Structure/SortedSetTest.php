@@ -2,7 +2,6 @@
 
 namespace Redtrine\Tests\Structure;
 
-use Redtrine\Redtrine;
 use Redtrine\Structure\SortedSet;
 use Redtrine\Tests\RedtrineTestCase;
 
@@ -13,10 +12,12 @@ class SortedSetTest extends RedtrineTestCase
      */
     protected $set;
 
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
-        $this->set = $this->redtrine->create('SortedSet', 'theNameOfTheSet');
+
+        $this->set = new SortedSet('theNameOfTheSet');
+        $this->set->setClient($this->getRedisClient());
         $this->set->removeAll();
     }
 

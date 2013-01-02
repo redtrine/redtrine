@@ -2,7 +2,6 @@
 
 namespace Redtrine\Tests\Structure;
 
-use Redtrine\Redtrine;
 use Redtrine\Structure\Set;
 use Redtrine\Tests\RedtrineTestCase;
 
@@ -13,10 +12,12 @@ class SetTest extends RedtrineTestCase
      */
     protected $set;
 
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
-        $this->set = $this->redtrine->create('Set', 'theNameOfTheSet');
+
+        $this->set = new Set('theNameOfTheSet');
+        $this->set->setClient($this->getRedisClient());
         $this->set->removeAll();
     }
 
@@ -97,28 +98,35 @@ class SetTest extends RedtrineTestCase
 
     public function testUnion()
     {
-        $a = $this->redtrine->create('Set', 'setA');
+        $a = new Set('SetA');
+        $a->setClient($this->getRedisClient());
         $a->add(array(1, 2, 3, 4));
-        $b = $this->redtrine->create('Set', 'setB');
+
+        $b = new Set('SetB');
+        $b->setClient($this->getRedisClient());
         $b->add(array(3, 4, 5, 6, 7, 8));
 
-        $this->assertEquals($a->union($b), array(1, 2, 3, 4, 5, 6, 7, 8));
+        $this->assertEquals(array(1, 2, 3, 4, 5, 6, 7, 8), $a->union($b));
     }
 
     public function testUnionStore()
     {
-        $a = $this->redtrine->create('Set', 'setA');
+        $a = new Set('SetA');
+        $a->setClient($this->getRedisClient());
         $a->add(array(1, 2, 3, 4));
-        $b = $this->redtrine->create('Set', 'setB');
+
+        $b = new Set('SetB');
+        $b->setClient($this->getRedisClient());
         $b->add(array(3, 4, 5, 6, 7, 8));
 
-        $destination = 'setDestination';
+        $destination = 'SetC';
         $total = $a->unionStore($destination, $b);
         $this->assertEquals(8 , $total);
 
-        $c = $this->redtrine->create('Set', $destination);
+        $c = new Set('SetC');
+        $c->setClient($this->getRedisClient());
 
-        $this->assertEquals($c->elements(), array(1, 2, 3, 4, 5, 6, 7, 8));
+        $this->assertEquals(array(1, 2, 3, 4, 5, 6, 7, 8), $c->elements());
     }
 
     public function testIterator()

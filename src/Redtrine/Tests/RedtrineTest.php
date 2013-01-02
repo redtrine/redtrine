@@ -6,6 +6,15 @@ use Redtrine\Redtrine;
 
 class RedtrineTest extends RedtrineTestCase
 {
+    protected $redtrine;
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->redtrine = new Redtrine($this->getRedisClient());
+    }
+
     /**
      * @covers Redtrine\Redtrine::getClient
      */

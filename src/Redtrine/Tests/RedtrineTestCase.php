@@ -2,29 +2,28 @@
 
 namespace Redtrine\Tests;
 
-use Redtrine\Redtrine;
-use Predis\Client as Redis;
+use Predis\Client as RedisClient;
 
 class RedtrineTestCase extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var Redtrine
-     */
-    protected $redtrine;
-
     protected $redis;
 
-    protected function setUp()
+    public function setUp()
     {
-        $this->redis = new Redis('tcp://127.0.0.1:6379');
-        $this->redis->select(15);
-        $this->redis->flushdb();
-
-        $this->redtrine = new Redtrine();
-        $this->redtrine->setClient($this->redis);
     }
 
-    protected function tearDown()
+    protected function getRedisClient()
+    {
+        if (null === $this->redis) {
+            $this->redis = new RedisClient('tcp://127.0.0.1:6379');
+            $this->redis->select(15);
+            $this->redis->flushdb();
+        }
+
+        return $this->redis;
+    }
+
+    public function tearDown()
     {
         unset($this->redis);
     }
