@@ -15,11 +15,17 @@ class RedtrineTestCase extends \PHPUnit_Framework_TestCase
     protected function getRedisClient()
     {
         if (null === $this->redis) {
-            $this->redis = new RedisClient('tcp://127.0.0.1:6379');
-            $this->redis->select(15);
-            $this->redis->flushdb();
-        }
+            try {
+                $this->redis = new RedisClient('tcp://127.0.0.1:6379');
+                $this->redis->select(15);
+                $this->redis->flushdb();
+            } catch (\Exception $e) {
+                $this->markTestIncomplete(
+                    'Redis Server instance not found!'
+                );
+            }
 
+        }
         return $this->redis;
     }
 
