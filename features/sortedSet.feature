@@ -21,3 +21,24 @@ Feature: Retrine Sorted Sets
       |  1004  |  4000   |  4    |
       |  1005  |  5000   |  5    |
       |  1006  |  6000   |  6    |
+
+  Scenario: Ranking
+    Given I have a working Redis Client
+    And I have a sorted set called "MySortedSet"
+    And the sorted has "6" items
+    When I get the highest Score
+    Then I get userId "1006"
+    And has a score of "6000"
+    When I get the Lowest Score
+    Then I get userId "1001"
+    And has a score of "1000"
+
+  Scenario: Removing items on Sorted Set
+    Given I have a working Redis Client
+    And I have a sorted set called "MySortedSet"
+    And the sorted has "6" items
+    When I remove user with id "1006"
+    Then the sorted has "5" items
+    When I get the highest Score
+    Then I get userId "1005"
+    And has a score of "5000"

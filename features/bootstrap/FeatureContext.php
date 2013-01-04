@@ -126,8 +126,51 @@ class FeatureContext extends BehatContext
      */
     public function hasAScoreOf($arg1)
     {
-        AssertEquals($this->set->score($this->key), $arg1);
+        $this->assertScores($arg1);
     }
 
+    /**
+     * @Given /^has a score of "([^"]*)"$/
+     */
+    public function hasAScoreOf2($arg1)
+    {
+        $this->assertScores($arg1);
+    }
+
+    protected function assertScores($arg1)
+    {
+        AssertEquals($this->set->score($this->key), $arg1);
+    }
+    /**
+     * @When /^I get the highest Score$/
+     */
+    public function iGetTheHighestScore()
+    {
+        list($this->key, $this->score) = $this->set->highestScore();
+    }
+
+    /**
+     * @Then /^I get userId "([^"]*)"$/
+     */
+    public function iGetUserid($arg1)
+    {
+        AssertEquals($this->key, $arg1);
+    }
+
+    /**
+     * @When /^I get the Lowest Score$/
+     */
+    public function iGetTheLowestScore()
+    {
+        list($this->key, $this->score) = $this->set->lowestScore();
+    }
+
+    /**
+     * @When /^I remove user with id "([^"]*)"$/
+     */
+    public function iRemoveUserWithId($arg1)
+    {
+        $this->set->remove($arg1);
+    }
 
 }
