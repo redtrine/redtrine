@@ -1,16 +1,20 @@
 {
-    "name": "lt/redtrine",
+    "name": "redtrine/redtrine",
     "type": "library",
     "description": "Redis-based advanced PHP data structures.",
     "keywords": ["redis", "nosql", "data structures"],
-    "homepage": "https://github.com/ronnylt/redtrine",
+    "homepage": "https://github.com/redtrine/redtrine",
     "license": "MIT",
-    "authors": [{
-        "name": "Ronny López",
-        "email": "hi@ronny.lt",
-        "name": "Marcos Quesada",
-        "email": "marcos.quesadas@gmail.com"
-    }],
+    "authors": [
+        {
+            "name": "Ronny López",
+            "email": "hi@ronny.lt"
+        },
+        {
+            "name": "Marcos Quesada",
+            "email": "marcos.quesadas@gmail.com"
+        }
+    ],
     "require": {
         "php": ">=5.3.3",
         "predis/predis": "0.8.*"
