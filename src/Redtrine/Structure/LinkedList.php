@@ -2,17 +2,8 @@
 
 namespace Redtrine\Structure;
 
-use IteratorAggregate,
-ArrayIterator,
-Countable;
-
-/**
- * I know, this name is ugly, but List is a PHP reserved word and can not be
- * used as a class name.
- */
-class Rlist extends Base implements IteratorAggregate, Countable
+class LinkedList extends Base implements \IteratorAggregate, \Countable
 {
-
     public function leftPush($value)
     {
         $this->client->lpush($this->key, $value);
@@ -24,7 +15,7 @@ class Rlist extends Base implements IteratorAggregate, Countable
     }
 
     /**
-     * Inserts value in the list beforethe reference value pivot.
+     * Inserts value in the list befor ethe reference value pivot.
      */
     public function insertBefore($pivot, $value)
     {
@@ -75,9 +66,17 @@ class Rlist extends Base implements IteratorAggregate, Countable
     }
 
     /**
-     * Returns the specified elements of the list.
+     * Returns the elements of the list as an array..
      */
     public function elements($start = 0, $stop = -1)
+    {
+        return $this->client->lrange($this->key, $start, $stop);
+    }
+
+    /**
+     * Returns a range of list elements.
+     */
+    public function range($start = 0, $stop = -1)
     {
         return $this->client->lrange($this->key, $start, $stop);
     }
@@ -139,11 +138,11 @@ class Rlist extends Base implements IteratorAggregate, Countable
 
     public function head()
     {
-        return $this->elements(0, 0);
+        return $this->range(0, 0);
     }
 
     public function tail()
     {
-        return $this->elements(-1, -1);
+        return $this->range(-1, -1);
     }
 }

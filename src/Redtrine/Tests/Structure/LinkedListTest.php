@@ -2,13 +2,13 @@
 
 namespace Redtrine\Tests\Structure;
 
-use Redtrine\Structure\Rlist;
+use Redtrine\Structure\LinkedList;
 use Redtrine\Tests\RedtrineTestCase;
 
-class RlistTest extends RedtrineTestCase
+class LinkedListTest extends RedtrineTestCase
 {
     /**
-     * @var Rlist
+     * @var LinkedList
      */
     protected $list;
 
@@ -16,7 +16,7 @@ class RlistTest extends RedtrineTestCase
     {
         parent::setUp();
 
-        $this->list = new Rlist('listName');
+        $this->list = new LinkedList('listName');
         $this->list->setClient($this->getRedisClient());
         $this->list->removeAll();
     }
