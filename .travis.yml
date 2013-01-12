@@ -13,3 +13,6 @@ matrix:
 before_script: composer install --dev
 
 script: phpunit
+
+services:
+  - redis-server
