@@ -8,24 +8,26 @@ class LinkedList extends Base implements \IteratorAggregate, \Countable
      * Prepend one or multiple values to a list.
      *
      * @param mixed|array $value
+     * @return int The length of the list after the push operation.
      *
      * @link http://redis.io/commands/lset
      */
     public function leftPush($value)
     {
-        $this->client->lpush($this->key, $value);
+        return $this->client->lpush($this->key, $value);
     }
 
     /**
       * Append one or multiple values to a list.
-     *
-      * @param mixed|array $value
       *
-      * @link http://redis.io/commands/lset
+      * @param mixed|array $value
+      * @return int The length of the list after the push operation.
+     *
+      * @link http://redis.io/commands/rpush
       */
     public function rightPush($value)
     {
-        $this->client->rpush($this->key, $value);
+        return $this->client->rpush($this->key, $value);
     }
 
     /**

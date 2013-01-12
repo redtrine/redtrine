@@ -26,7 +26,7 @@ class LinkedListTest extends RedtrineTestCase
      */
     public function testLeftPushWithSingleValue($value)
     {
-        $this->list->leftPush($value);
+        $this->assertEquals(1, $this->list->leftPush($value));
         $this->assertEquals($value, $this->list->get(0));
     }
 
@@ -35,7 +35,7 @@ class LinkedListTest extends RedtrineTestCase
      */
     public function testLeftPushWithMultipleValues($values)
     {
-        $this->list->leftPush($values);
+        $this->assertEquals(count($values), $this->list->leftPush($values));
         $this->assertEquals(array_reverse($values), $this->list->range(0, count($values) - 1));
     }
 
@@ -44,7 +44,7 @@ class LinkedListTest extends RedtrineTestCase
      */
     public function testRightPushWithSingleValue($value)
     {
-        $this->list->rightPush($value);
+        $this->assertEquals(1, $this->list->rightPush($value));
         $this->assertEquals($value, $this->list->get($this->list->length() - 1));
     }
 
@@ -53,7 +53,7 @@ class LinkedListTest extends RedtrineTestCase
      */
     public function testRightPushWithMultipleValues($values)
     {
-        $this->list->rightPush($values);
+        $this->assertEquals(count($values), $this->list->rightPush($values));
         $this->assertEquals($values, $this->list->range(0, count($values) - 1));
     }
 
