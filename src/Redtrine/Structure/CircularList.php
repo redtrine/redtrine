@@ -2,6 +2,10 @@
 
 namespace Redtrine\Structure;
 
+/**
+ * A circular list is a linked list that can be atomically rotated from left
+ * to right (removing the tail and pushing it at head).
+ */
 class CircularList extends LinkedList
 {
     /**
