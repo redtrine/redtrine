@@ -4,18 +4,47 @@ namespace Redtrine\Structure;
 
 class LinkedList extends Base implements \IteratorAggregate, \Countable
 {
+    /**
+     * Prepend one or multiple values to a list.
+     *
+     * @param mixed|array $value
+     *
+     * @link http://redis.io/commands/lset
+     */
     public function leftPush($value)
     {
         $this->client->lpush($this->key, $value);
     }
 
+    /**
+      * Append one or multiple values to a list.
+     *
+      * @param mixed|array $value
+      *
+      * @link http://redis.io/commands/lset
+      */
     public function rightPush($value)
     {
         $this->client->rpush($this->key, $value);
     }
 
     /**
-     * Inserts value in the list befor ethe reference value pivot.
+     * Sets the list element at the specified index.
+     *
+     * @link http://redis.io/commands/lset
+     */
+    public function set($index, $element)
+    {
+        return $this->client->lset($this->key, $index, $element);
+    }
+
+    /**
+     * Inserts value in the list before the reference value pivot.
+     *
+     * @param $pivot
+     * @param $value
+     *
+     * @link http://redis.io/commands/linsert
      */
     public function insertBefore($pivot, $value)
     {
@@ -24,6 +53,11 @@ class LinkedList extends Base implements \IteratorAggregate, \Countable
 
     /**
      * Inserts value in the list after the reference value pivot.
+     *
+     * @param $pivot
+     * @param $value
+     *
+     * @link http://redis.io/commands/linsert
      */
     public function insertAfter($pivot, $value)
     {
@@ -31,25 +65,13 @@ class LinkedList extends Base implements \IteratorAggregate, \Countable
     }
 
     /**
-     * Sets the list element at the specified index.
-     */
-    public function set($index, $element)
-    {
-        return $this->client->lset($this->key, $index, $element);
-    }
-
-    /**
      * Returns the element at the specified position in the list.
-     * The index is zero-based, so 0 means the first element, 1 the second
-     * element and so on. Negative indices can be used to designate elements
-     * starting at the tail of the list. Here, -1 means the last element,
-     * -2 means the penultimate and so forth.
      *
-     * @see http://redis.io/commands/lindex
+     * @link http://redis.io/commands/lindex
      */
     public function get($index)
     {
-        return $this->client->lindex($this->name, $index);
+        return $this->client->lindex($this->key, $index);
     }
 
     /**
@@ -62,19 +84,13 @@ class LinkedList extends Base implements \IteratorAggregate, \Countable
 
     public function rightPop()
     {
-        $this->client->rpop($this->key);
-    }
-
-    /**
-     * Returns the elements of the list as an array..
-     */
-    public function elements($start = 0, $stop = -1)
-    {
-        return $this->client->lrange($this->key, $start, $stop);
+        return $this->client->rpop($this->key);
     }
 
     /**
      * Returns a range of list elements.
+     *
+     * @link http://redis.io/commands/lrange
      */
     public function range($start = 0, $stop = -1)
     {
@@ -82,7 +98,17 @@ class LinkedList extends Base implements \IteratorAggregate, \Countable
     }
 
     /**
+     * Returns the elements of the list as an array.
+     */
+    public function elements()
+    {
+        return $this->range(0, -1);
+    }
+
+    /**
      * Returns the length of the list.
+     *
+     * @link http://redis.io/commands/lrange
      */
     public function length()
     {
@@ -99,7 +125,7 @@ class LinkedList extends Base implements \IteratorAggregate, \Countable
 
     public function getIterator()
     {
-        return new ArrayIterator($this->elements());
+        return new \ArrayIterator($this->elements());
     }
 
     public function removeAll()
@@ -111,17 +137,26 @@ class LinkedList extends Base implements \IteratorAggregate, \Countable
      * Removes the first count occurrences of elements equal to value from
      * the list.
      *
+     * count > 0: Remove elements equal to value moving from head to tail.
+     * count < 0: Remove elements equal to value moving from tail to head.
+     * count = 0: Remove all elements equal to value.
+     *
+     * @param int   $count
+     * @param mixed $value
+     * @return int The number of removed elements.
+     *
      * @see http://redis.io/commands/lrem
      */
     public function remove($count, $value)
     {
-        $this->client->rem($this->key, $count, $value);
+        return $this->client->lrem($this->key, $count, $value);
     }
 
     /**
      * Trim the list so that it will contain only the specified range of elements
-     * specified.  Both start and stop are zero-based indexes, where 0 is the
-     * first element of the list (the head), 1 the next element and so on.
+     * specified.
+     *
+     * @see http://redis.io/commands/ltrim
      */
     public function trim($start, $stop)
     {
@@ -133,16 +168,30 @@ class LinkedList extends Base implements \IteratorAggregate, \Countable
      */
     public function cap($length)
     {
+        if ($length <= 0) {
+            throw new \InvalidArgumentException('Length must be a positive integer.');
+        }
+
         $this->trim(0, $length - 1);
     }
 
+    /**
+     * Returns the element on the head of the list.
+     *
+     * @return mixed
+     */
     public function head()
     {
-        return $this->range(0, 0);
+        return $this->get(0);
     }
 
+    /**
+     * Returns the element on the tail of the list.
+     *
+     * @return mixed
+     */
     public function tail()
     {
-        return $this->range(-1, -1);
+        return $this->get(-1);
     }
 }
