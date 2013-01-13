@@ -32,33 +32,33 @@ class CappedList extends LinkedList
 
     public function leftPush($value)
     {
-        $replies = $this->client->pipeline(function($pipe) use ($value) {
-            $pipe->lpush($this->key, $value);
-            $pipe->ltrim($this->key, 0, $this->length - 1);
-            $pipe->llen($this->key);
-        });
+        $pipe = $this->client->pipeline();
+        $pipe->lpush($this->key, $value);
+        $pipe->ltrim($this->key, 0, $this->length - 1);
+        $pipe->llen($this->key);
+        $replies = $pipe->execute();
 
         return $replies[2];
     }
 
     public function rightPush($value)
     {
-        $replies = $this->client->pipeline(function($pipe) use ($value) {
-            $pipe->rpush($this->key, $value);
-            $pipe->ltrim($this->key, 0, $this->length - 1);
-            $pipe->llen($this->key);
-        });
+        $pipe = $this->client->pipeline();
+        $pipe->rpush($this->key, $value);
+        $pipe->ltrim($this->key, 0, $this->length - 1);
+        $pipe->llen($this->key);
+        $replies = $pipe->execute();
 
         return $replies[2];
     }
 
     public function insertBefore($pivot, $value)
     {
-        $replies = $this->client->pipeline(function($pipe) use ($pivot, $value) {
-            $pipe->linsert($this->key, 'BEFORE', $pivot, $value);
-            $pipe->ltrim($this->key, 0, $this->length - 1);
-            $pipe->llen($this->key);
-        });
+        $pipe = $this->client->pipeline();
+        $pipe->linsert($this->key, 'BEFORE', $pivot, $value);
+        $pipe->ltrim($this->key, 0, $this->length - 1);
+        $pipe->llen($this->key);
+        $replies = $pipe->execute();
 
         if ($replies[0] == -1) {
             return $replies[0];
@@ -69,11 +69,11 @@ class CappedList extends LinkedList
 
     public function insertAfter($pivot, $value)
     {
-        $replies = $this->client->pipeline(function($pipe) use ($pivot, $value) {
-            $pipe->linsert($this->key, 'AFTER', $pivot, $value);
-            $pipe->ltrim($this->key, 0, $this->length - 1);
-            $pipe->llen($this->key);
-        });
+        $pipe = $this->client->pipeline();
+        $pipe->linsert($this->key, 'AFTER', $pivot, $value);
+        $pipe->ltrim($this->key, 0, $this->length - 1);
+        $pipe->llen($this->key);
+        $replies = $pipe->execute();
 
         if ($replies[0] == -1) {
             return $replies[0];
