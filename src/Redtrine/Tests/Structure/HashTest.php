@@ -75,13 +75,13 @@ class HashTest extends RedtrineTestCase
     /**
      * @dataProvider getElements
      */
-    public function testRemove($field, $value)
+    public function testDelete($field, $value)
     {
         $this->hash->set($field, $value);
         $this->assertTrue($this->hash->contains($field));
         $this->assertEquals($this->hash->get($field), $value);
 
-        $this->hash->remove($field);
+        $this->assertEquals(1, $this->hash->delete($field));
         $this->assertFalse($this->hash->contains($field));
         $this->assertNull($this->hash->get($field));
     }
@@ -100,7 +100,7 @@ class HashTest extends RedtrineTestCase
         }
 
         foreach ($elements as $field => $value) {
-            $this->hash->remove($field);
+            $this->hash->delete($field);
             $this->assertFalse($this->hash->exists($field));
         }
     }

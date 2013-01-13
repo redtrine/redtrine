@@ -55,13 +55,17 @@ class Hash extends Base implements IteratorAggregate, Countable
     }
 
     /**
-     * Remove a field from the hash.
+     * Delete one or more hash fields.
      *
-     * @param $element
+     * @param $field
+     * @return int The number of fields that were removed from the hash,
+     *             not including specified but non existing fields.
+     *
+     * @see http://redis.io/commands/hdel
      */
-    public function remove($field)
+    public function delete($field)
     {
-        $this->client->hdel($this->key, $field);
+        return $this->client->hdel($this->key, $field);
     }
 
     /**
