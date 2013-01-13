@@ -43,4 +43,14 @@ abstract class Base
     {
         return $this->client;
     }
+
+    /**
+     * Remove the structure from the underlying Redis database.
+     *
+     * @return array The number of keys that were removed.
+     */
+    public function destroy()
+    {
+        return $this->getClient()->del($this->getKey());
+    }
 }
