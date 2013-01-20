@@ -2,10 +2,6 @@
 
 namespace Redtrine\Structure;
 
-use IteratorAggregate,
-    ArrayIterator,
-    Countable;
-
 class DensitySet extends Base
 {
     /**
