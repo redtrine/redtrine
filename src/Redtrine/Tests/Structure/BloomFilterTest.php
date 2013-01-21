@@ -23,13 +23,16 @@ class BloomFilterTest extends RedtrineTestCase
 
     public function testToAddOneItemOnASpreadBloomFilterNotExists()
     {
-        // $this->set->setSize(2);
-        // $this->set->setNumHashes(100000);
-
         $this->set->add('insertedKey');
 
-        $this->assertFalse($this->set->exists('notExistent'));
+        $this->assertFalse($this->set->exists('notExistentKey'));
+    }
 
+    public function testToAddOneItemOnASpreadBloomFilterMayExists()
+    {
+        $this->set->add('newKey');
+
+        $this->assertTrue($this->set->exists('newKey'));
     }
 
 }

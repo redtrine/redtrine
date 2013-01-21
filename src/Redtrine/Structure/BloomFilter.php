@@ -32,60 +32,59 @@ class BloomFilter extends Base
 
     /**
      * Add Item on Bloom Filter
-     * Iterates N numHashes , creates crc32 Item&Hash Mod Size
-     * Convert it to binary value
-     * Iterates on every char , if are 1 uses setBit
      *
      * @param string $item
      */
     public function add($item)
     {
-        $this->client->multi();
-
-        for ($hashIndex = 0; $hashIndex < $this->getNumHashes(); $hashIndex++) {
-
-            //binary representation
-            $crc = decbin(crc32($item.$hashIndex) % $this->getSize());
-
-            var_dump($crc);
-
-            for ($i=0; $i < strlen($crc); $i++) {
-                if ($crc[$i] === '1') {
-                    $this->client->setbit($this->key, $i, 1);
-                }
-            }
-        }
-        $this->client->exec();
+        $this->generateBitCode('set', $item);
     }
 
     /**
-     * Check if Item exists on Bloom Filter
-     * Iterates N numHashes , creates crc32 Item&Hash Mod Size
-     * Convert it to binary value
-     * Iterates on every char , if are 1 uses getBit
-     * If any of them reports 1 is true
-     * Remember , this filter avoids false negatives
+     * Check if key exists in a probabilistic way
+     * Response es fully truth when response is FALSE
      *
      * @param string $item
      */
     public function exists($item)
     {
+        $result = $this->generateBitCode('get', $item);
+
+        return (array_sum($result)/count($result)) === 1;
+    }
+
+    /**
+     * Check if Item exists on Bloom Filter
+     * Iterates N numHashes , creates a single hash
+     * Convert it to binary value
+     * Iterates on every char , get/set associated Bits
+     *
+     * @param str $method Working Side
+     * @param str $item Related Key
+     * @return array
+     */
+    protected function generateBitCode($method, $item)
+    {
+        if (!in_array($method, array('get', 'set')))
+            throw new \Exception("Method Not allowed");
+
         $this->client->multi();
+
         for ($hashIndex = 0; $hashIndex < $this->getNumHashes(); $hashIndex++) {
 
-            $crc = decbin(crc32($item.$hashIndex) % $this->getSize());
+            $crc = decbin(crc32($item.'-'.$hashIndex) % $this->getSize());
 
             for ($i=0; $i < strlen($crc); $i++) {
                 if ($crc[$i] === '1') {
-                    $this->client->getbit($this->key, $i);
+                    if ($method === 'set')
+                        $this->client->setbit($this->key, $i, 1);
+                    if ($method === 'get')
+                        $this->client->getbit($this->key, $i);
                 }
             }
         }
-        $result = $this->client->exec();
-        var_dump($result);
 
-        //@TODO: Not clear how to return right result
-        return !(array_sum($result) === 0);
+        return $this->client->exec();
     }
 
     /**
