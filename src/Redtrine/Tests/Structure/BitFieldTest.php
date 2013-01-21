@@ -23,18 +23,20 @@ class BitFieldTest extends RedtrineTestCase
     /**
      * @dataProvider bitValues
      */
-    public function testToSetAndGetBitField($value)
+    public function testToSetAndGetBitField($key, $value)
     {
-        $this->bit->set(100, $value);
+        $this->bit->set($key, $value);
 
-        $this->assertEquals($this->bit->get(100), $value);
+        $this->assertEquals($this->bit->get($key), $value);
     }
 
     public function bitValues()
     {
         return array(
-            array(0),
-            array(1)
+            array(100,0),
+            array(101,0),
+            array(100,1),
+            array(101,1),
         );
     }
 }
