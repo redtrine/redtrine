@@ -35,4 +35,9 @@ class BloomFilterTest extends RedtrineTestCase
         $this->assertTrue($this->set->exists('newKey'));
     }
 
+    public function testOptimalNumberOfHashesCalculation()
+    {
+        $this->assertEquals($this->set->getOptimalNumberOfHashes(1000000), 1);
+    }
+
 }

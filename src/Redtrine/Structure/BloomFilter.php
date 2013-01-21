@@ -87,6 +87,19 @@ class BloomFilter extends Base
         return $this->client->exec();
     }
 
+
+    /**
+     * Calculates the optimal number of hashes
+     * given Bit Size and the items volume to be stored
+     *
+     * @param int $number of items to insert
+     * @return int Optimal number of Hashes
+     */
+    public function getOptimalNumberOfHashes($totalItems)
+    {
+        return (int) ceil(($this->size / $totalItems) * log(2));
+    }
+
     /**
      * Destroy bloomFilter
      */
