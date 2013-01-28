@@ -2,11 +2,7 @@
 
 namespace Redtrine\Structure;
 
-use IteratorAggregate,
-    ArrayIterator,
-    Countable;
-
-class SortedSet extends Base implements IteratorAggregate, Countable
+class SortedSet extends Base implements \IteratorAggregate, \Countable
 {
     /**
      * Adds the specified members with the specified scores to the sorted set.
@@ -83,6 +79,23 @@ class SortedSet extends Base implements IteratorAggregate, Countable
         return $this->normalizeScores($this->client->zrange($this->key, $start, $stop, 'WITHSCORES'));
     }
 
+    public function rangeByScore($min, $max, $offset = null, $count = null)
+    {
+        if (isset($offset) && null === $count) {
+            throw new \InvalidArgumentException('Count should not be null if an offset is specified.');
+        }
+
+        if (isset($offset) && isset($count)) {
+            return $this->client->zrangebyscore($this->key, $min, $max, 'LIMIT ' . $offset . ' ' . $count);
+
+        } else {
+            return $this->client->zrangebyscore($this->key, $min, $max);
+        }
+
+        return $this->client->zrangebyscore($this->key, $min, $max, $limit);
+    }
+
+
     public function reverseRange($start = 0, $stop = -1)
     {
         return $this->client->zrevrange($this->key, $start, $stop);
@@ -129,7 +142,7 @@ class SortedSet extends Base implements IteratorAggregate, Countable
 
     public function getIterator()
     {
-        return new ArrayIterator($this->rangeWithScores());
+        return new \ArrayIterator($this->rangeWithScores());
     }
 
     public function highestScores($count = 1)
