@@ -2,11 +2,7 @@
 
 namespace Redtrine\Structure;
 
-use IteratorAggregate,
-    ArrayIterator,
-    Countable;
-
-class Hash extends Base implements IteratorAggregate, Countable
+class Hash extends Base
 {
     /**
      * Get an array of hash keys.
@@ -112,24 +108,8 @@ class Hash extends Base implements IteratorAggregate, Countable
         return $this->client->hlen($this->key);
     }
 
-    /**
-     * Count the elements in the object.
-     *
-     * @return int
-     */
-    public function count()
-    {
-        return $this->length();
-    }
-
     public function removeAll()
     {
         $this->client->del($this->key);
     }
-
-    public function getIterator()
-    {
-        return new ArrayIterator($this->elements(true));
-    }
-
 }
