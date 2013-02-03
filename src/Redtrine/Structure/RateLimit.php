@@ -146,16 +146,53 @@ class RateLimit extends Base
      */
     public function addCount($subject, $interval)
     {
-        $count = (int)floor($interval / $this->bucketInterval);
-        $bucket = $this->getBucket();
-        $this->addFromBucket($subject, $bucket);
-
-        $values = array();
         $subject = (is_array($subject))? $subject: array($subject);
-        foreach (array_unique($subject) as $item) {
-            $result[$item] = $this->countFromBucket($item, $interval, $bucket);
+        $this->client->multi();
+
+        $bucket = $this->getBucket();
+        foreach ($subject as $item) {
+            $this->addItem($item, $bucket);
         }
-        return $result;
+
+        $count = (int)floor($interval / $this->bucketInterval);
+        $values = array();
+        foreach (array_unique($subject) as $item) {
+            $item = $this->key.':'.$item;
+            $itemBucket = $bucket;
+            for ($i=1; $i <= $count ; $i++) {
+                $this->client->hget($item, ($itemBucket-- + $this->bucketCount) % $this->bucketCount);
+            }
+
+        }
+
+        $result = $this->client->exec();
+
+        return $this->parseMultiResponse($result, $subject, $count);
+    }
+
+    /**
+     * Parse Redis response
+     * from response its remove add operations,
+     * leaves only hget values , sumarized on associated keys
+     *
+     * @param array $result redis response
+     * @param array $subject items
+     * @param int $count  number of buckets
+     * @return array item keys , total on value
+     */
+    protected function parseMultiResponse($result, $subject, $count)
+    {
+        $totalResponse = $count*count(array_unique($subject));
+        $result = array_slice($result, -$totalResponse, $totalResponse);
+
+        $pointer = 0;
+        $response = array();
+        foreach (array_unique($subject) as $item) {
+            $response[$item] = array_sum(array_slice($result, $pointer*$count , $count));
+            ++$pointer;
+        }
+
+       return $response;
     }
 
     /**
