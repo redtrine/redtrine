@@ -13,6 +13,10 @@
         {
             "name": "Marcos Quesada",
             "email": "marcos.quesadas@gmail.com"
+        },
+        {
+            "name": "Ricard Clau",
+            "email": "ricard.clau@gmail.com"
         }
     ],
     "require": {
