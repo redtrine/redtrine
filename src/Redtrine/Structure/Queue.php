@@ -51,4 +51,16 @@ class Queue extends LinkedList
     {
         return (true === $this->fifo) ? $this->rightPop() : $this->leftPop();
     }
+
+    /**
+     * Pops an element form the queue and atomically pushes into another queue
+     *
+     * @return mixed element being popped and pushed
+     *
+     * @link http://redis.io/commands/rpoplpush
+     */
+    public function dequeueEnqueue($target)
+    {
+        return $this->client->rpoplpush($this->getName(),$target->getName());
+    }
 }

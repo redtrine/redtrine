@@ -11,12 +11,16 @@ class QueueTest extends RedtrineTestCase
      * @var Queue
      */
     private $queue;
+    private $otherQueue;
 
     public function setUp()
     {
         parent::setUp();
         $this->queue = new Queue('queueName');
         $this->queue->setClient($this->getRedisClient());
+
+        $this->otherQueue = new Queue('otherQueueName');
+        $this->otherQueue->setClient($this->getRedisClient());
     }
 
     public function tearDown()
@@ -42,6 +46,13 @@ class QueueTest extends RedtrineTestCase
         $this->queue->setFifo(false);
         $this->loadValues();
         $this->assertEquals(3, $this->queue->dequeue());
+    }
+
+    public function testRpopLpush()
+    {
+        $this->loadValues();
+        $poppedValue = $this->queue->dequeueEnqueue($this->otherQueue);
+        $this->assertEquals($poppedValue, $this->otherQueue->dequeue());
     }
 
     private function loadValues()
