@@ -21,7 +21,6 @@ class QueueTest extends RedtrineTestCase
 
     public function tearDown()
     {
-        $this->queue->removeAll();
         parent::tearDown();
     }
 
