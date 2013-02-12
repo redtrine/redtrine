@@ -55,11 +55,13 @@ class Queue extends LinkedList
     /**
      * Pops an element form the queue and atomically pushes into another queue
      *
+     * @param Queue $target Popped element is pushed to this queue
+     * 
      * @return mixed element being popped and pushed
      *
      * @link http://redis.io/commands/rpoplpush
      */
-    public function dequeueEnqueue($target)
+    public function dequeueEnqueue(Queue $target)
     {
         return $this->client->rpoplpush($this->getName(),$target->getName());
     }
@@ -68,11 +70,14 @@ class Queue extends LinkedList
      * Pops an element form the queue and atomically pushes into another queue
      * Blocks $timeout if there is no element to pop.
      *
-     * @return mixed element being popped and pushed
+     * @param Queue $target Popped element is pushed to this queue
+     * @param int $timeout After $timeout seconds null is returned if queue is empty
      *
-     * @link http://redis.io/commands/rpoplpush
+     * @return mixed element being popped and pushed, null on timeout
+     *
+     * @link http://redis.io/commands/brpoplpush
      */
-    public function dequeueBlockingEnqueue($target, $timeout)
+    public function blockingDequeueEnqueue(Queue $target, $timeout)
     {
         return $this->client->brpoplpush($this->getName(),$target->getName(),$timeout);
     }
