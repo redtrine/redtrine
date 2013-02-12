@@ -55,6 +55,20 @@ class QueueTest extends RedtrineTestCase
         $this->assertEquals($poppedValue, $this->otherQueue->dequeue());
     }
 
+    public function testBrpopLpushWithValues()
+    {
+        $this->loadValues();
+        $poppedValue = $this->queue->dequeueBlockingEnqueue($this->otherQueue,1);
+        $this->assertNotNull($poppedValue);
+        $this->assertEquals($poppedValue, $this->otherQueue->dequeue());
+    }
+
+    public function testBrpopLpushTimeout()
+    {
+        $poppedValue = $this->queue->dequeueBlockingEnqueue($this->otherQueue,1);
+        $this->assertNull($poppedValue);
+    }
+
     private function loadValues()
     {
         for ($i = 1; $i <= 3; $i++) {
