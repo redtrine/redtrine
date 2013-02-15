@@ -86,13 +86,11 @@ class SortedSet extends Base implements \IteratorAggregate, \Countable
         }
 
         if (isset($offset) && isset($count)) {
-            return $this->client->zrangebyscore($this->key, $min, $max, 'LIMIT ' . $offset . ' ' . $count);
+            return $this->client->zrangebyscore($this->key, $min, $max, 'LIMIT', $offset, $count);
 
         } else {
             return $this->client->zrangebyscore($this->key, $min, $max);
         }
-
-        return $this->client->zrangebyscore($this->key, $min, $max, $limit);
     }
 
 
