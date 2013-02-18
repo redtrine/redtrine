@@ -21,7 +21,7 @@ class CacheTest extends RedtrineTestCase
     {
         parent::setUp();
 
-        $this->cache = new Cache('TestBitField');
+        $this->cache = new Cache('TestCache');
         $this->cache->setClient($this->getRedisClient());
 
         $this->testValue = serialize(array(1,2,3));
