@@ -93,6 +93,19 @@ class SortedSet extends Base implements \IteratorAggregate, \Countable
         }
     }
 
+    public function rangeByScoreWithScores($min, $max, $offset = null, $count = null)
+    {
+        if (isset($offset) && null === $count) {
+            throw new \InvalidArgumentException('Count should not be null if an offset is specified.');
+        }
+
+        if (isset($offset) && isset($count)) {
+            return $this->normalizeScores($this->client->zrangebyscore($this->key, $min, $max, 'WITHSCORES', 'LIMIT', $offset, $count));
+
+        } else {
+            return $this->normalizeScores($this->client->zrangebyscore($this->key, $min, $max, 'WITHSCORES'));
+        }
+    }
 
     public function reverseRange($start = 0, $stop = -1)
     {
