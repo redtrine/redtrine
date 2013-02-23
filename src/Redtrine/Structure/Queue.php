@@ -63,7 +63,7 @@ class Queue extends LinkedList
      */
     public function dequeueEnqueue(Queue $target)
     {
-        return $this->client->rpoplpush($this->getName(),$target->getName());
+        return $this->client->rpoplpush($this->getName(), $target->getName());
     }
 
     /**
@@ -79,6 +79,6 @@ class Queue extends LinkedList
      */
     public function blockingDequeueEnqueue(Queue $target, $timeout)
     {
-        return $this->client->brpoplpush($this->getName(),$target->getName(),$timeout);
+        return $this->client->brpoplpush($this->getName(), $target->getName(), $timeout);
     }
 }
