@@ -3,7 +3,7 @@ Cache
 
 Cache structure makes it easy to use `Redis` as a cache backend.
 
-You can set an optional expiration time in seconds.
+You can set an **optional** expiration time in seconds.
 
 This is an example on how to cache some database records for 1 minute.
 
@@ -14,5 +14,9 @@ This is an example on how to cache some database records for 1 minute.
     // ...
     $someDatabaseRecords = ...
 
-    $cachedRecords = new Cache('cachedRecords');
-    $cachedData->set(json_encode($someDatabaseRecords), 60);
+    $databaseCache = new Cache('cachedRecords');
+    $databaseCache->set(json_encode($someDatabaseRecords), 60);
+
+    // and to retrieve cached data in another HTTP Request
+    $databaseCache = new Cache('cachedRecords');
+    $databaseCache = $cachedRecords->get();
