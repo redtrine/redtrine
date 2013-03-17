@@ -41,7 +41,7 @@ class Queue extends LinkedList
      */
     public function enqueue($value)
     {
-        $this->leftPush($value);
+        (true === $this->fifo) ? $this->leftPush($value) : $this->rightPush($value);
     }
 
     /**
@@ -49,7 +49,7 @@ class Queue extends LinkedList
      */
     public function dequeue()
     {
-        return (true === $this->fifo) ? $this->rightPop() : $this->leftPop();
+        return $this->rightPop();
     }
 
     /**

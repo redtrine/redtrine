@@ -47,24 +47,45 @@ class QueueTest extends RedtrineTestCase
         $this->assertEquals(3, $this->queue->dequeue());
     }
 
-    public function testRpopLpush()
+    public function testRpopLpushFifo()
     {
         $this->loadValues();
         $poppedValue = $this->queue->dequeueEnqueue($this->otherQueue);
         $this->assertEquals($poppedValue, $this->otherQueue->dequeue());
+        $this->assertEquals(1, $poppedValue);
     }
 
-    public function testBrpopLpushWithValues()
+    public function testBrpopLpushWithValuesFifo()
     {
         $this->loadValues();
-        $poppedValue = $this->queue->blockingDequeueEnqueue($this->otherQueue,1);
+        $poppedValue = $this->queue->blockingDequeueEnqueue($this->otherQueue, 1);
         $this->assertNotNull($poppedValue);
         $this->assertEquals($poppedValue, $this->otherQueue->dequeue());
+        $this->assertEquals(1, $poppedValue);
+    }
+
+    public function testRpopLpushLifo()
+    {
+        $this->queue->setFifo(false);
+        $this->loadValues();
+        $poppedValue = $this->queue->dequeueEnqueue($this->otherQueue);
+        $this->assertEquals($poppedValue, $this->otherQueue->dequeue());
+        $this->assertEquals(3, $poppedValue);
+    }
+
+    public function testBrpopLpushWithValuesLifo()
+    {
+        $this->queue->setFifo(false);
+        $this->loadValues();
+        $poppedValue = $this->queue->blockingDequeueEnqueue($this->otherQueue, 1);
+        $this->assertNotNull($poppedValue);
+        $this->assertEquals($poppedValue, $this->otherQueue->dequeue());
+        $this->assertEquals(3, $poppedValue);
     }
 
     public function testBrpopLpushTimeout()
     {
-        $poppedValue = $this->queue->blockingDequeueEnqueue($this->otherQueue,1);
+        $poppedValue = $this->queue->blockingDequeueEnqueue($this->otherQueue, 1);
         $this->assertNull($poppedValue);
     }
 
