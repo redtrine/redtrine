@@ -19,4 +19,4 @@ This is an example on how to cache some database records for 1 minute.
 
     // and to retrieve cached data in another HTTP Request
     $databaseCache = new Cache('cachedRecords');
-    $databaseCache = $cachedRecords->get();
+    $cachedRecords = $databaseCache->get();
