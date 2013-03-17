@@ -27,6 +27,7 @@ Want to see all Structures supported by Redtrine? There's a tutorial for each on
 	:maxdepth: 1
 
 	structures/cache
+	structures/keypair
 	structures/queue
 
 
