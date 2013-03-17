@@ -9,11 +9,11 @@ Internally, the `KeyPair` uses two Redis hashes to provide O(1) lookup by both I
 It also uses a Redis key to store auto-increment counter.
 
 Redis Structure:
- *    `(namespace:)key     = hash(id => value)`
- *    `(namespace:)key:ids = hash(value => id)`
- *    `(namespace:)key:autoinc = integer`
+    *    `(namespace:)key     = hash(id => value)`
+    *    `(namespace:)key:ids = hash(value => id)`
+    *    `(namespace:)key:autoinc = integer`
 
- .. code-block:: php
+.. code-block:: php
 
     use Redtrine\Structure\KeyPair;
 
