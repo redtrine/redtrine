@@ -1,13 +1,7 @@
 <?php
 
-use Behat\Behat\Context\ClosuredContextInterface,
-    Behat\Behat\Context\TranslatedContextInterface,
-    Behat\Behat\Context\BehatContext,
-    Behat\Behat\Exception\PendingException,
-    Behat\Behat\Event\SuiteEvent,
+use Behat\Behat\Context\BehatContext,
     Behat\Behat\Event\FeatureEvent;
-use Behat\Gherkin\Node\PyStringNode,
-    Behat\Gherkin\Node\TableNode;
 
 use Predis\Client;
 use Redtrine\Structure\SortedSet;
@@ -44,7 +38,7 @@ class FeatureContext extends BehatContext
             $redis->flushdb();
         } catch (\Exception $e) {
             echo "Redis Server is needed to test features!".PHP_EOL;
-            exit;
+            throw $e;
         }
     }
 

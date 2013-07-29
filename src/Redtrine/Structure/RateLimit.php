@@ -155,7 +155,6 @@ class RateLimit extends Base
         }
 
         $count = (int)floor($interval / $this->bucketInterval);
-        $values = array();
         foreach (array_unique($subject) as $item) {
             $item = $this->key.':'.$item;
             $itemBucket = $bucket;
